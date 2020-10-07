@@ -4,7 +4,7 @@ var router = express.Router();
 var USER = require("../database/user");
 
 //METODO GET PARA USER
-//MOSTRAR DATOS
+
 router.get("/user",(req,res)=>{
     //filtrar
     //http://localhost:8000/api/1.0/user?
@@ -13,10 +13,11 @@ router.get("/user",(req,res)=>{
     var select="";
     var aux = {};
     var order = {};
+    var age = {};
     //filtrar un nombre
     //http://localhost:8000/api/1.0/user?name=zanzarah
     if(params.name != null){
-        var expresion=new RegExp(params.name);
+        var expresion=new RegExp(params.name,"i");
         filter["name"]=expresion;
        
     }
@@ -36,11 +37,13 @@ router.get("/user",(req,res)=>{
         var gl = parseInt(params.agelt);
         aux["$lt"] =  gl;
     }
-    if (aux != {}) {
+    /*console.log("erros justo aqui");
+    if (aux != {} ) {
         filter["age"] = aux;
     }
-     //filtrar el orden segun el nombre
-     //http://localhost:8000/api/1.0/user?filters=name,email&agegt=20&&agelt=20&order=name,1
+    */
+    //filtrar el orden segun el nombre
+    //http://localhost:8000/api/1.0/user?filters=name,email&agegt=20&&agelt=20&order=name,1
      
 
     if (params.order != null) {
@@ -48,8 +51,9 @@ router.get("/user",(req,res)=>{
         var number = parseInt(data[1]);
         order[data[0]] = number;
     }
-
+   console.log(filter); 
    USER.find(filter).
+
    select(select). 
    sort(order).  
    exec((err,docs)=>{
@@ -62,6 +66,7 @@ router.get("/user",(req,res)=>{
    });
 });
 //SUBIR INFORMACION
+//METODO POST PARA USER
 router.post("/user",(req,res)=>{
     var userRest =req.body;
     var userDB=new USER (userRest);
@@ -96,6 +101,7 @@ router.put("/user",(req,res)=>{
     var keys = Object.keys(bodydata);
     var updateobjectdata = {};
     //filtrar los datos que no necestito que se actualize
+    //ZANZARAH
     for (var i = 0; i < keys.length; i++) {
         if (allowkeylist.indexOf(keys[i]) > -1) {  
             updateobjectdata[keys[i]] = bodydata[keys[i]];
@@ -134,17 +140,20 @@ router.delete("/user", (req, res) => {
 router.post("/login", async(req, res) => {
     var body = req.body;
     console.log(body.name);
+    console.log(body.password);
     if (body.name == null) {
         res.status(300).json({msn: "El nombre es necesario"});
-             return;
+        
+    return;
     }
+
     if (body.password == null) {
         res.status(300).json({msn: "El password es necesario"});
         return;
     }
     var results = await USER.find({name: body.name, password:body.password});
     console.log(results);
-    if (results.length == 1) {
+    if (results.length != 1) {
         res.status(200).json({msn: "Bienvenido " + body.name + " al sistema"});
         return;
     }

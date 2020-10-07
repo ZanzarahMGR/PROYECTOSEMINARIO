@@ -10,6 +10,8 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var userRouter =require('./routes/user');
 var restauranteRouter = require('./routes/restaurante');
+var menuRouter = require('./routes/menu');
+var ordenRouter = require('./routes/orden');
 var app = express();
 
 // VIEW ENGINE
@@ -25,6 +27,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/1.0', indexRouter);
 app.use('/api/1.0', userRouter);
 app.use('/api/1.0', restauranteRouter);
+app.use('/api/1.0', menuRouter);
+app.use('/api/1.0', ordenRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -36,7 +40,7 @@ app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
+  //zanzarah
   // render the error page
   res.status(err.status || 500);
   res.render('error');
@@ -52,11 +56,12 @@ module.exports = app;
 // docker-compose stop
 // docker ps
 
-//1. INSTALAR MONGOSE  base de datos
+// INSTALAR MONGOSE  base de datos
 // terminal introducir el siguiente comando mas el CONTAINER ID para que se instale destro del contenedor de la api proyecto_app
 // 
 //  docker exec -it "ID_CONTAINER" npm install mongoose
-//2. INSTALAR SHA1  para cifrar
+
+// INSTALAR SHA1  para cifrar
 // terminal introducir el siguiente comando mas el CONTAINER ID para que se instale destro del contenedor de la api proyecto_app
 // sudo docker exec -it "IDCONTAINER npm intall sha1
 

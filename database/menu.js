@@ -1,43 +1,37 @@
-//CREAR EL ESQUEMA ESTRUCTURA DE LA TABLA DE RESTAURANTE
+//CREAR EL ESQUEMA ESTRUCTURA DE LA TABLA DE MENUS
 
 
 var mongoose= require("./connect"); 
-var RESTAURANTESCHEMA =new mongoose.Schema({
-    name:{
+var MENUSCHEMA =new mongoose.Schema({
+    nombre:{
         type:String,
         required:[true,"EL nombre del restaurante es necesario"]
         
     },
-    nit:{
+    precio:{
         type:Number,
         required:[true,"Es necesario el NIT de su restaurante"]
         
     },
-    propietario:{
+    descripcion:{
         type:String,
         required:[true,"Es necesario el nombre del propietario "]
         
     },
-    direccion:{
+    fecha:{
         type: String,
         required:[true,"La direccion es necesario"],
         
     },
-    telefono:{
-        type: Number,
+    fotografia:{
+        type: String,
          
         required:[true,"El numero es necesario"],
 
     },
-    log:{
-        type: String,
-        required: [true,"EL log es necesario"],
-    },
-    lat:String,
-    logo:String,
-    date:Date,
-    foto:String
+    
+   
 
 });
-var REST = mongoose.model("restaurante",RESTAURANTESCHEMA);
-module.exports=REST;
+var MENU = mongoose.model("menu",MENUSCHEMA);
+module.exports=MENU;

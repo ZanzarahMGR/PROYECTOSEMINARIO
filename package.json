@@ -5,15 +5,18 @@
   "scripts": {
     "start": "node ./bin/www"
   },
-  
   "dependencies": {
+    "audit": "0.0.5",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "express": "~4.16.0",
+    "express-fileupload": "^1.2.0",
+    "fix" : "0.0.5",
     "http-errors": "~1.6.2",
     "jade": "~1.11.0",
-    "mongoose": "^5.10.0",
+    "mongoose": "^5.10.8",
     "morgan": "~1.9.0",
+    "npm": "^6.14.8",
     "sha1": "^1.1.1"
   }
 }

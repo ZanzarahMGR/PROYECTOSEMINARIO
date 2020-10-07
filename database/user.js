@@ -1,6 +1,6 @@
 //ESQUEMA DE USER PARA BASE DE DATOS
 
-var mongoose= require("./connect"); //conectar con el connect.js
+var mongoose= require("./connect"); 
 var USERSCHEMA =new mongoose.Schema({
     name:{
         type:String,
