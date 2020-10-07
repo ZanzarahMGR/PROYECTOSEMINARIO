@@ -96,6 +96,7 @@ router.put("/user",(req,res)=>{
     var keys = Object.keys(bodydata);
     var updateobjectdata = {};
     //filtrar los datos que no necestito que se actualize
+    //ZANZARAH
     for (var i = 0; i < keys.length; i++) {
         if (allowkeylist.indexOf(keys[i]) > -1) {  
             updateobjectdata[keys[i]] = bodydata[keys[i]];

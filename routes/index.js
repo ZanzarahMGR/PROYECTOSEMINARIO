@@ -24,7 +24,7 @@ router.get('/usuario', (req, res, next) =>{
    console.log(name);
   
   res.status(200).json({
-      msm:"Nombre :" + name  //muestro el nombre
+      msm:"Nombre :" + name 
   });
 
 
@@ -38,12 +38,11 @@ router.get('/usuario', (req, res, next) =>{
 
 router.post('/usuario', (req, res, next) =>{
   
-  var datos =req.body;//optengo el cuerpo UTILIZO BODY cuando trabajo con POST
+  var datos =req.body;
   
-  console.log(datos); //para ver que me muestra datos en consola
-  datos["timeserver"] =new Date();//fecha
-  datos["method"] ="POST";//metodo
-  
+  console.log(datos);
+  datos["timeserver"] =new Date();
+  datos["method"] ="POST";
 //almacenar los datos antes de subirlo a la base de datos
   var user={};
   user["name"]= datos.name;
@@ -57,24 +56,23 @@ var newuser=new USER(user);
   });
 
 
-  res.status(200).json(datos); //muestro todos los datos que resivo
- 
+  res.status(200).json(datos); 
 });
 
 router.put("/usuario",(req,res)=>{
-  var datos =req.body;//optengo el cuerpo UTILIZO BODY cuando trabajo con POST
-  console.log(datos); //para ver que me muestra datos en consola
+  var datos =req.body;
+  console.log(datos); 
   datos["timeserver"] =new Date();
-  datos["method"] ="PUT";//metodo
-  res.status(200).json(datos); //muestro todos los datos que resivo
+  datos["method"] ="PUT";
+  res.status(200).json(datos); 
 })
 
 router.delete('/usuario', (req, res, next) =>{
   
-  var datos =req.query; //optengo el cuerpo UTILIZO QUERY cuando trabajo con GET
-  var id= datos.id; //saco el id
-   console.log(datos); //muestro en la consola datos
-   console.log(id);//muestro en la consola el id
+  var datos =req.query; 
+  var id= datos.id; 
+   console.log(datos); 
+   console.log(id);
   
   res.status(200).json({
       msm:"DELETE"
