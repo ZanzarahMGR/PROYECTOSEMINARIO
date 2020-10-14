@@ -11,7 +11,10 @@ var indexRouter = require('./routes/index');
 var userRouter =require('./routes/user');
 var restauranteRouter = require('./routes/restaurante');
 var menuRouter = require('./routes/menu');
+<<<<<<< HEAD
 var ordenRouter = require('./routes/orden');
+=======
+>>>>>>> fbe40978722bd47e934f6c14f8e914fb23a5d9ce
 var app = express();
 
 // VIEW ENGINE
@@ -28,7 +31,10 @@ app.use('/api/1.0', indexRouter);
 app.use('/api/1.0', userRouter);
 app.use('/api/1.0', restauranteRouter);
 app.use('/api/1.0', menuRouter);
+<<<<<<< HEAD
 app.use('/api/1.0', ordenRouter);
+=======
+>>>>>>> fbe40978722bd47e934f6c14f8e914fb23a5d9ce
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
