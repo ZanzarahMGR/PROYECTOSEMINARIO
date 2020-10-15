@@ -1,20 +1,36 @@
 //CREAR EL ESQUEMA ESTRUCTURA DE LA TABLA DE ORDEN
-var mongoose= require("./connect"); 
-var ORDENSCHEMA =new mongoose.Schema({
+var mongoose= require("./connect");
 
-    id_menu:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "menu",
+var Schema = mongoose.Schema;
+var ORDENSCHEMA =new Schema({
+
+    menu:[{
+        type: Schema.Types.ObjectId,
+        ref: "menu"
         
+    }],  
+    restaurante:[{
+        type: Schema.Types.ObjectId,
+        ref: "restaurante"
+    }],   
+    cantidad:{
+        type: Number,
     },
-    id_restaurante:{
+    user:[{
+        type: Schema.Types.ObjectId,
+        ref: "user"
+    }],
+    lugar_de_envio:{
         type: String,
-        required:[true,"Es necesario el NIT de su restaurante"]
-    },   
+    },
+    pago_total: {
+        type: Number,
+    },
     fecha:{
         type: Date,
         default: Date.now
     }
+
    
 
 });
