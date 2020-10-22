@@ -4,8 +4,8 @@ var router = express.Router();
 var USER =require("../database/user");
 
 
-// GET home page
-router.get('/', function(req, res, next) {
+
+/*router.get('/', function(req, res, next) {
   
   console.log("ingreso al index /api/v1.0")
   
@@ -13,7 +13,7 @@ router.get('/', function(req, res, next) {
       msm:"Bienvenido al Proyecto Seminario"
   });
  
-});
+});*/
 
 //RUTAS DE PRUEBA EN POSTMAN
 router.get('/usuario', (req, res, next) =>{
