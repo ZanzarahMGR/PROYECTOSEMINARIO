@@ -15,14 +15,14 @@ router.get("/user",(req,res)=>{
     var order = {};
     var age = {};
     //filtrar un nombre
-    //http://localhost:8000/api/1.0/user?name=zanzarah
+    
     if(params.name != null){
         var expresion=new RegExp(params.name,"i");
         filter["name"]=expresion;
        
     }
     //filtrar mas datos
-    //http://localhost:8000/api/1.0/user?name=zanzarah&filters=name,email
+    
     if(params.filters != null){
         select =params.filters.replace(/,/g, " ");
     }
@@ -37,6 +37,7 @@ router.get("/user",(req,res)=>{
         var gl = parseInt(params.agelt);
         aux["$lt"] =  gl;
     }
+    
     /*console.log("erros justo aqui");
     if (aux != {} ) {
         filter["age"] = aux;
@@ -50,8 +51,10 @@ router.get("/user",(req,res)=>{
         var data = params.order.split(",");
         var number = parseInt(data[1]);
         order[data[0]] = number;
+
     }
    console.log(filter); 
+    //BUSCAR LOS DATOS 
    USER.find(filter).
 
    select(select). 
@@ -66,6 +69,7 @@ router.get("/user",(req,res)=>{
    });
 });
 //SUBIR INFORMACION
+
 //METODO POST PARA USER
 router.post("/user",(req,res)=>{
     var userRest =req.body;

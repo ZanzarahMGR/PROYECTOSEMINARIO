@@ -1,3 +1,4 @@
+
 //CREAR EL ESQUEMA ESTRUCTURA DE LA TABLA DE RESTAURANTE
 
 
@@ -13,30 +14,46 @@ var RESTAURANTESCHEMA =new mongoose.Schema({
         required:[true,"Es necesario el NIT de su restaurante"]
         
     },
-    propietario:{
+    property:{
         type:String,
         required:[true,"Es necesario el nombre del propietario "]
         
     },
-    direccion:{
+    street:{
         type: String,
         required:[true,"La direccion es necesario"],
         
     },
-    telefono:{
+    phone:{
         type: Number,
          
         required:[true,"El numero es necesario"],
 
     },
+    
     log:{
         type: String,
-        required: [true,"EL log es necesario"],
+        required: [true,"EL log K es necesario"],
+        default: "-19",
     },
-    lat:String,
-    logo:String,
-    date:Date,
-    foto:String
+    lat:{
+        type: String,
+        required: [true,"EL log es necesario"],
+        default: "-20",
+    },
+    logo:{
+        type: String, 
+        default: "No IMAGE",
+        required: [true, "la ruta de la imagen es necesaria"]
+    },
+
+    registerdate:Date,
+    
+    picture:{
+        type: String, 
+        default: "No IMAGE",
+        required: [true, "la ruta de la imagen es necesaria"]
+    }
 
 });
 var REST = mongoose.model("restaurante",RESTAURANTESCHEMA);

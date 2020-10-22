@@ -1,38 +1,34 @@
-//CREAR EL ESQUEMA ESTRUCTURA DE LA TABLA DE ORDEN
-var mongoose= require("./connect");
+var mongoose = require("./connect");
 
-var Schema = mongoose.Schema;
-var ORDENSCHEMA =new Schema({
+const Schema = mongoose.Schema;
 
-    menu:[{
-        type: Schema.Types.ObjectId,
-        ref: "menu"
-        
-    }],  
-    restaurante:[{
-        type: Schema.Types.ObjectId,
-        ref: "restaurante"
-    }],   
-    cantidad:{
-        type: Number,
+var ordenSchema = new Schema({
+
+
+  cliente: {
+  type: Schema.Types.ObjectId,
+  ref: "Cliente"
+  },
+
+  restaurant:{
+    type: Schema.Types.ObjectId,
+    ref: "Restaurant"
+  },
+  menus : {
+    type: Schema.Types.ObjectId,
+    ref: "Menus"
+  },
+  lugar_envio: Number,
+  precios : Number,
+  cantidad :Number,
+  Fecha_Registro:
+    {
+      type:Date,
+      default: Date.now()
+
     },
-    user:[{
-        type: Schema.Types.ObjectId,
-        ref: "user"
-    }],
-    lugar_de_envio:{
-        type: String,
-    },
-    pago_total: {
-        type: Number,
-    },
-    fecha:{
-        type: Date,
-        default: Date.now
-    }
 
-   
-
+pago_total : Number,
 });
-var ORDEN = mongoose.model("orden",ORDENSCHEMA);
-module.exports=ORDEN;
+var orden = mongoose.model("Orden", ordenSchema);
+module.exports = orden;

@@ -1,4 +1,5 @@
-//ESQUEMA DE USER PARA BASE DE DATOS
+//CREAR EL ESQUEMA ESTRUCTURA DE LA TABLA
+
 
 var mongoose= require("./connect"); 
 var USERSCHEMA =new mongoose.Schema({

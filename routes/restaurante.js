@@ -1,5 +1,4 @@
 var express = require("express");
-
 var router = express.Router();
 var REST= require("../database/restaurante");
 
@@ -77,7 +76,7 @@ router.put("/restaurante",(req,res)=>{
         res.status(300),json({msn: "EL parametro ID es necesario"});
         return;
     }
-    var allowkeylist = ["name","nit", "direccion", "telefono"];
+    var allowkeylist = ["name","propietario","nit", "direccion", "telefono"];
     var keys = Object.keys(bodydata);
     var updateobjectdata = {};
     

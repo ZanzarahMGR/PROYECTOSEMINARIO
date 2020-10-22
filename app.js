@@ -8,14 +8,14 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
-var userRouter =require('./routes/user');
+var userRouter = require('./routes/user');
 var restauranteRouter = require('./routes/restaurante');
-var menuRouter = require('./routes/menu');
-var ordenRouter = require('./routes/orden');
+//var imagenesRouter = require('./routes/imagen');
+var servicesRouter = require('./routes/services');
 
 var app = express();
 
-// VIEW ENGINE
+// view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
@@ -28,8 +28,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/1.0', indexRouter);
 app.use('/api/1.0', userRouter);
 app.use('/api/1.0', restauranteRouter);
-app.use('/api/1.0', menuRouter);
-app.use('/api/1.0', ordenRouter);
+//app.use('/api/1.0', imagenesRouter);
+app.use('/api/1.0', servicesRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -41,15 +41,17 @@ app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-  //zanzarah
+
   // render the error page
   res.status(err.status || 500);
   res.render('error');
 });
+
 var port =8000;
 app.listen(port,()=>{
   console.log("Corriendo "+ port);
 });
+
 module.exports = app;
 
 // LEVARTAR SERVICIO DOCKER
