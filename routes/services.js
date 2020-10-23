@@ -4,7 +4,7 @@ var router = express.Router();
 var Menus = require("../database/menus");
 var Cliente = require("../database/cliente");
 var Orden = require("../database/orden");
-var Users = require("../database/user");
+//var Users = require("../database/user");
 
 //var jwt = require("jsonwebtoken");
 
@@ -185,7 +185,7 @@ router.patch("/menus", (req, res) => {
 
 //METODO PUT MENUS
 
-router.put(/menus\/[a-z0-9]{1,}$/, (req, res) => {
+router.put("/menus", (req, res) => {
   var url = req.url;
   var id = url.split("/")[2];
   var keys  = Object.keys(req.body);
@@ -282,7 +282,7 @@ router.get(/cliente\/[a-z0-9]{1,}$/, (req, res) => {
 
 //METODO DELETE CLIENTE
 
-router.delete(/cliente\/[a-z0-9]{1,}$/, (req, res) => {
+router.delete("/cliente", (req, res) => {
   var url = req.url;
   var id = url.split("/")[2];
   Cliente.find({_id : id}).remove().exec( (err, docs) => {
