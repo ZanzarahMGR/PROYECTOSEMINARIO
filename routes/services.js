@@ -185,7 +185,7 @@ router.patch("/menus", (req, res) => {
 
 //METODO PUT MENUS
 
-router.put("/menus", (req, res) => {
+router.put(/menus\/[a-z0-9]{1,}$/, (req, res) => {
   var url = req.url;
   var id = url.split("/")[2];
   var keys  = Object.keys(req.body);

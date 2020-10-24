@@ -112,4 +112,24 @@ router.delete("/restaurante",(req,res)=>{
     });
 });
 
+//METODO PATCH RESTAURANTE
+
+router.patch("/restaurante", (req, res) => {
+    console.log(req.body);
+      if (req.query.id == null) {
+          res.status(300).json({
+          msn: "Error no existe restaurante"
+      });
+          return;
+      }
+      var id = req.query.id;
+      var params = req.body;
+      REST.findByIdAndUpdate(id, params, (err, docs) => {
+      res.status(200).json({
+          msn:"Actualizado",
+          docs
+      });
+      });
+  });
+
 module.exports = router;
