@@ -1,7 +1,7 @@
-//CREAR EL ESQUEMA ESTRUCTURA DE LA TABLA
-
+//CREAR EL ESQUEMA ESTRUCTURA DE LA TABLA USER
 
 var mongoose= require("./connect"); 
+
 var USERSCHEMA =new mongoose.Schema({
     name:{
         type:String,
@@ -18,6 +18,7 @@ var USERSCHEMA =new mongoose.Schema({
         required:[true,"La edad es necesario"]
         
     },
+    //VALIDAD EMAIL CON ECUACIONES REGULARES
     email:{
         type: String,
         required:[true,"El email es necesario"],
@@ -33,7 +34,18 @@ var USERSCHEMA =new mongoose.Schema({
     password:{
         type: String,
         required: [true,"EL password es necesario"],
+        max:[15,"EL password debe tener un maximo 15 caracteres"],
+
         min:[6,"EL password debe tener un minimo de 6 caracteres"],
+
+        validate:{
+            validator:(value)=>{
+                var reg =new RegExp("/[A-Z](?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]","g");
+                /[A-Z](?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]$/g.test(value);
+                
+                
+            }
+        },
     
     },
     date:Date

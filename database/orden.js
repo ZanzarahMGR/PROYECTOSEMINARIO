@@ -1,9 +1,11 @@
+
+////CREAR EL ESQUEMA ESTRUCTURA DE ORDEN
+
 var mongoose = require("./connect");
 
 const Schema = mongoose.Schema;
 
 var ordenSchema = new Schema({
-
 
   cliente: {
   type: Schema.Types.ObjectId,
@@ -14,13 +16,18 @@ var ordenSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "Restaurant"
   },
+
   menus : {
     type: Schema.Types.ObjectId,
     ref: "Menus"
   },
+
   lugar_envio: Number,
+
   precios : Number,
+
   cantidad :Number,
+
   Fecha_Registro:
     {
       type:Date,
@@ -28,7 +35,9 @@ var ordenSchema = new Schema({
 
     },
 
-pago_total : Number,
+  pago_total : Number,
+
 });
+
 var orden = mongoose.model("Orden", ordenSchema);
 module.exports = orden;

@@ -1,15 +1,19 @@
+//SERVICIOS PARA LA APLICACION POR WILBER CARLO
+//MGR
+
 var express = require('express');
 var router = express.Router();
 
 var Menus = require("../database/menus");
 var Cliente = require("../database/cliente");
 var Orden = require("../database/orden");
-//var Users = require("../database/user");
-
+var Users = require("../database/user");
+var factura = require("../database/factura");
+var valid=require("./utils/valid");
 //var jwt = require("jsonwebtoken");
 
-// LOGIN
 
+//LOGIN DEL SERVIDOR NO SIRVE PARA NADA PERO ESTA AHI XD
 
 router.post("/login", (req, res, next) => {
   var email = req.body.email;
@@ -24,24 +28,11 @@ router.post("/login", (req, res, next) => {
     console.log(doc);
     if (doc) {
         console.log(result);
-        res.status(200).json(doc);
-      /*jwt.sign({name: doc.email, password: doc.password}, "secretkey123", (err, token) => {
-          console.log(result);
-          res.status(200).json({
-            resp:200,
-            token : token,
-            dato:doc
-          });
-      })*/
-      
-        console.log(result);
         res.status(200).json({
-          resp:200,
-          //token : token,
-          dato:doc,
-          msn : "ingreso"
-          
-        });
+        resp:200,
+        dato:doc,
+        msn : "ingreso"          
+    });
         
     
     } else {
@@ -53,7 +44,9 @@ router.post("/login", (req, res, next) => {
   });
 });
 
-//Middelware
+
+//MIDEELWARE
+
 function verifytoken (req, res, next) {
   
   const header = req.headers["authorization"];
@@ -75,10 +68,10 @@ function verifytoken (req, res, next) {
   }
 }
 
-//METODO POST MENU 
+// METODO POST MENUS
 
 router.post("/menus", (req, res) => {
-
+  console.log(req.body);
   var data = req.body;
   data ["registerdate"] = new Date();
   var newmenus = new Menus(data);
@@ -89,14 +82,15 @@ router.post("/menus", (req, res) => {
       "id" : rr._id,
       "msn" : "Menu agregado con exito"
     });
+    console.log(newmenus.body);
   });
 });
 
-//METOODO GET MENUS
+//METODO GET MENUS
 
 router.get("/menus",(req, res) => {
   var skip = 0;
-  var limit = 10;
+  var limit = 20;
   if (req.query.skip != null) {
     skip = req.query.skip;
   }
@@ -119,23 +113,34 @@ router.get("/menus",(req, res) => {
   });
 });
 
+//METODO GET MENUS 2
+
 router.get(/menus\/[a-z0-9]{1,}$/, (req, res) => {
   var url = req.url;
   var id = url.split("/")[2];
-  Menus.findOne({_id : id}).exec( (error, docs) => {
-    if (docs != null) {
-        res.status(200).json(docs);
+  Menus.find({restaurante : id}).exec( (error, docs) => {
+   /* if (docs != null) {
+      
+        res.status(200).json({docs});
         return;
     }
-
     res.status(400).json({
       "respuesta":400,
       "msn" : "No existe el recurso seleccionado"
-    });
+    });*/
+
+    if (docs != null) {
+      res.status(200).json(docs);
+      return;
+  }
+
+  res.status(200).json({
+    "msn" : "No existe el pedido "
+  });
   })
 });
 
-//METODO DELETE MENUS
+//METODOO DELETE MENUS
 
 router.delete("/menus",(req,res)=>{
 
@@ -151,15 +156,11 @@ router.delete("/menus",(req,res)=>{
            return;
        } 
        res.status(200).json({
-           msm:"Eliminado",
+           msn:"Eliminado",
            docs
        });
   });
 });
-
-
-
-
 
 
 //METODO PATCH MENUS
@@ -181,7 +182,6 @@ router.patch("/menus", (req, res) => {
     });
     });
 });
-
 
 //METODO PUT MENUS
 
@@ -222,20 +222,36 @@ router.put(/menus\/[a-z0-9]{1,}$/, (req, res) => {
   });
 });
 
-//METODO POST CLIENTE
 
-router.post("/cliente",  (req, res) => {
-console.log(req.body);
-  var data = req.body;0
-  data ["registerdate"] = new Date();
-  var newcliente = new Cliente(data);
-  newcliente.save().then((rr) =>{
-    res.status(200).json({
-      "resp": 200,
-      "dato": newcliente,
-      "msn" : "Cliente agregado"
-    });
+// METODO POST CLIENTE 
+
+router.post('/cliente', async(req, res) => {
+  var params = req.body;
+  console.log(req.body);
+  params["registerdate"] = new Date();
+
+  if(!valid.checkPassword(params.password)){
+  res.status(300).json({msn:"EL password  . Necesita almenos un numero una letra minuscula ,un caracter especial y minimamente de 6 caracteres"});
+  return;
+  }
+  
+  if(!valid.checkEmail(params.email)){
+      res.status(300).json({
+        "resp": 300,
+        "msn":"Correo invalido"});
+      return;
+      }
+  // params.password = sha1(params.password);
+  //params.email = sha1(params.email);
+  var users = new Cliente(params);
+  var result = await users.save();
+ // res.status(200).json(result);
+  res.status(200).json({
+    "resp": 200,
+    "dato": result,
+    "msn" : "Cliente agregado a BD"
   });
+  
 });
 
 //METODO GET CLIENTE
@@ -263,7 +279,7 @@ router.get("/cliente",(req, res) => {
   });
 });
 
-
+//METODO GET CLIENTE 2
 
 router.get(/cliente\/[a-z0-9]{1,}$/, (req, res) => {
   var url = req.url;
@@ -279,10 +295,11 @@ router.get(/cliente\/[a-z0-9]{1,}$/, (req, res) => {
     });
   })
 });
+//ZANZARAH MGR
 
 //METODO DELETE CLIENTE
 
-router.delete("/cliente", (req, res) => {
+router.delete(/cliente\/[a-z0-9]{1,}$/, (req, res) => {
   var url = req.url;
   var id = url.split("/")[2];
   Cliente.find({_id : id}).remove().exec( (err, docs) => {
@@ -294,35 +311,29 @@ router.delete("/cliente", (req, res) => {
 
 //METODO PATCH CLIENTE
 
-router.patch(/cliente\/[a-z0-9]{1,}$/, (req, res) => {
-  var url = req.url;
-  var id = url.split( "/")[4];
-  var keys = Object.keys(req.body);
-  var cliente = {
-    nombre : req.body.nombre,
-    ci : req.body.ci,
-    telefono : req.body.telefono,
-    email : req.body.email,
-
-  };
-  console.log(cliente);
-  Cliente.findOneAndUpdate({_id: id}, cliente, (err, params) => {
-      if(err) {
-        res.status(500).json({
-          "msn": "Error no se pudo actualizar los datos"
-        });
+router.patch("/cliente", (req, res) => {
+  console.log(req.body);
+    if (req.query.id == null) {
+        res.status(300).json({
+        msn: "Error no existe restaurante"
+    });
         return;
-      }
-      res.status(200).json({
-        "resp": 200,
-        "dato": cliente,
-        "msn" : "Cliente editado con exito"
-      });
-      return;
-  });
+    }
+    var id = req.query.id;
+    var params = req.body;
+    Cliente.findByIdAndUpdate(id, params, (err, docs) => {
+    res.status(200).json({
+      
+        msn:"Actualizado",
+        docs
+    });
+    });
 });
 
+
 //METODO PUT CLIENTE
+//WILBER CARLOS T
+
 router.put(/cliente\/[a-z0-9]{1,}$/, (req, res) => {
   var url = req.url;
   var id = url.split("/")[2];
@@ -359,13 +370,23 @@ router.put(/cliente\/[a-z0-9]{1,}$/, (req, res) => {
   });
 });
 
-//METODO POST ORDEN
+//METOODO POST ORDEN
 
 router.post("/orden",  (req, res) => {
+  console.log(req.body);
+  var cant=req.body.cantidad;
+   var prec=req.body.precios;
+   
+   console.log(cant);
+   console.log(prec);
 
+   var pago_total=cant*prec;
   var data = req.body;
   data ["registerdate"] = new Date();
+  data ["pago_total"] = pago_total;
+   
   var neworden = new Orden(data);
+  
   neworden.save().then((rr) =>{
     res.status(200).json({
       "resp": 200,
@@ -374,18 +395,42 @@ router.post("/orden",  (req, res) => {
     });
   });
 });
+
 router.get("/orden", (req, res, next) =>{
   Orden.find({}).populate("menus").populate("cliente").populate("restaurant").exec((error, docs) => {
     res.status(200).json(docs);
   });
 });
 
-// METODO GET ORDEN
+//METODO GET ORDEN 
 
 router.get(/orden\/[a-z0-9]{1,}$/, (req, res) => {
   var url = req.url;
   var id = url.split("/")[2];
-  Orden.findOne({_id : id}).exec( (error, docs) => {
+
+  Orden.find({cliente  : id}).exec( (error, docs) => {
+    if (docs != null) {
+        res.status(200).json(docs);
+        return;
+    }
+    res.status(200).json({
+
+        "array_texto":
+          {
+            "texto":"<b>orden</b>",
+            "texto":"registrado con exito"
+          }
+    });
+  }) 
+});
+
+//METODO GET ORDEN
+
+router.get(/ordenm\/[a-z0-9]{1,}$/, (req, res) => {
+  var url = req.url;
+  var id = url.split("/")[2];
+
+  Orden.find({menus  : id}).exec( (error, docs) => {
     if (docs != null) {
         res.status(200).json(docs);
         return;
@@ -398,59 +443,57 @@ router.get(/orden\/[a-z0-9]{1,}$/, (req, res) => {
             "texto":"<b>orden</b>",
             "texto":"registrado con exito"
           }
-
-
     });
   })
+
 });
+
 
 //METODO DELETE ORDEN
 
-router.delete('/orden/:id', (req, res,) => {
-  var idOrden = req.params.id;
+router.delete("/orden",(req,res)=>{
 
-  Orden.findByIdAndRemove(idOrden).exec()
-      .then(() => {
-          res.json({
-              message: "Orden eliminado"
-          });
-      }).catch(err => {
-          res.status(500).json({
-              error: err
-          });
-      });
-
-
+  console.log(req.query);
+  var params = req.query;
+  if (params.id == null) {
+      res.status(300).json({msn: "El parámetro ID es necesario"});
+      return;
+  }
+  Orden.remove({_id: params.id}, (err, docs) => {
+      if (err) {
+          res.status(500).json({msn: "Existen problemas en la base de datos"});
+           return;
+       } 
+       res.status(200).json({
+           msm:"Eliminado",
+           docs
+       });
+  });
 });
 
 //METODO PATCH ORDEN
 
-router.patch(/orden\/[a-z0-9]{1,}$/, (req, res) => {
-  var url = req.url;
-  var id = url.split("/")[2];
-  var keys = Object.keys(req.body);
-  var orden = {};
-  for (var i = 0; i < keys.length; i++) {
-    orden[keys[i]] = req.body[keys[i]];
-  }
-  console.log(orden);
-  Orden.findOneAndUpdate({_id: id}, orden, (err, params) => {
-      if(err) {
-        res.status(500).json({
-          "msn": "Error no se pudo actualizar los datos"
-        });
+router.patch("/orden", (req, res) => {
+  console.log(req.body);
+    if (req.query.id == null) {
+        res.status(300).json({
+        msn: "Error no existe restaurante"
+    });
         return;
-      }
-      res.status(200).json({
-        "resp": 200,
-        "dato": orden,
-        "msn" : "Orden editado con exito"
-      });
-      return;
-  });
+    }
+    var id = req.query.id;
+    var params = req.body;
+    console.log(res.body);
+    Orden.findByIdAndUpdate(id, params, (err, docs) => {
+    res.status(200).json({
+        msn:"Actualizado",
+        docs
+    });
+    });
 });
 
-//METODO PUT ORDEN
+
+//METODO PUT ORDEN SI SE PUDE =D
 
 router.put(/orden\/[a-z0-9]{1,}$/, (req, res) => {
   var url = req.url;
@@ -489,5 +532,50 @@ router.put(/orden\/[a-z0-9]{1,}$/, (req, res) => {
       return;
   });
 });
+/*
+router.get("/factura", (req, res, next) =>{
+  factura.find({}).populate("menus").populate("cliente").populate("restaurant").exec((error, docs) => {
+    res.status(200).json(docs);
+  });
+});*/
+
+//METODO POST FACTURA
+
+router.post("/factura",(req, res) => {
+  console.log(req.body);
+    var data = req.body;
+    data["registerdate"] = new Date();
+    var newfactura = new factura(data);
+    newfactura.save().then( (rr) => {
+      
+      res.status(200).json({
+        
+        "id" : rr._id,
+        "msn" : "factura Agregado con exito"
+      });
+      console.log(newfactura.body);
+    });
+  });
+
+  router.get("/factura",(req, res) => {
+    var skip = 0;
+    var limit = 10;
+    if (req.query.skip != null) {
+      skip = req.query.skip;
+    }
+  
+    if (req.query.limit != null) {
+      limit = req.query.limit;
+    }
+    factura.find({}).skip(skip).limit(limit).exec((err, docs) => {
+      if (err) {
+        res.status(500).json({
+          "msn" : "Error en la db"
+        });
+        return;
+      }
+      res.status(200).json(docs);
+    });
+  });
 
 module.exports = router;

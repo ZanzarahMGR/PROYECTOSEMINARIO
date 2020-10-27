@@ -1,73 +1,73 @@
 var express = require("express");
+//var sha1 = require("sha1");
 var router = express.Router();
 var REST= require("../database/restaurante");
+//var IMG= require("../database/updateimg");
+//var fileUpload = require("express-fileupload")
+/*router.use(fileUpload({
+    fileSize: 50 * 1024 * 1024
+}));*/
 
-//METODO DE GET PARA RESTAURANTE
+//METODO GET RESTAURANTE 1
 
-router.get("/restaurante",(req,res)=>{
 
-    //http://localhost:8000/api/1.0/restaurante?
-    var filter={};
-    var params=req.query;
-    var select="";
-   
-    var order = {};
-    //FILTRAR POR NOMBRE
-    //http://localhost:8000/api/1.0/restaurante?name=zanzarah
-    if(params.name != null){
-        var expresion=new RegExp(params.name);
-        filter["name"]=expresion;
-       
+router.get("/restaurante",(req, res) => {
+  var skip = 0;
+  var limit = 10;
+  if (req.query.skip != null) {
+    skip = req.query.skip;
+  }
+
+  if (req.query.limit != null) {
+    limit = req.query.limit;
+  }
+  REST.find({}).skip(skip).limit(limit).exec((err, docs) => {
+    if (err) {
+      res.status(500).json({
+        "msn" : "Error en la db"
+      });
+      return;
     }
-    //FILTRAR DIFERENTES DATOS
-    //http://localhost:8000/api/1.0/restaurante?name=zanzarah&filters=name,nit
-    if(params.filters != null){
-        select =params.filters.replace(/,/g, " ");
-    }
-     //filtrar el orden segun el nombre
-     //http://localhost:8000/api/1.0/restaurante?filters=name,nit&agegt=10&&agelt=60&order=name,1
-     
-
-    if (params.order != null) {
-        var data = params.order.split(",");
-        var number = parseInt(data[1]);
-        order[data[0]] = number;
-    }   
-   REST.find(filter).
-   select(select). 
-   sort(order).  
-   exec((err,docs)=>{
-       if(err){
-           res.status(500).json({msn:"Error en el servidor"});
-           return;
-       }
-       res.status(200).json(docs);
-       return;
-   });
+    res.status(200).json(docs);
+  });
 });
 
-//METODO POST PARA RESTAURANTE
+//METODO GET RESTAURANTE 2
 
-router.post("/restaurante",(req,res)=>{
-    var RESTRest =req.body;
-    var RESTDB=new REST (RESTRest);
-    RESTDB.save((err,docs)=>{
-        if (err) {
-            var errors = err.errors;
-            var keys = Object.keys(errors);
-            var msn = {};
-            for (var i = 0; i < keys.length; i++) {
-                msn[keys[i]] = errors[keys[i]].message;
-            }
-            res.status(500).json(msn);
-            return;
-        }
+router.get(/restaurante\/[a-z0-9]{1,}$/, (req, res) => {
+  var url = req.url;
+  var id1 =url;
+  var id = url.split("/")[2];
+  console.log(id);
+  REST.find({cliente : id}).exec( (error, docs) => {
+    if (docs != null) {
         res.status(200).json(docs);
         return;
-    })
+    }
+
+    res.status(200).json({
+      "msn" : "No existe el pedido "
+    });
+  })
 });
 
-//METODO PUT PARA RESTAURANTE
+//METODO POST RESTAURANTE
+
+router.post("/restaurante",(req, res) => {
+  console.log(req.body);
+    var data = req.body;
+    data["registerdate"] = new Date();
+    var newrestaurant = new REST(data);
+    newrestaurant.save().then( (rr) => {
+      res.status(200).json({
+        "id" : rr._id,
+        "msn" : "Restaurante Agregado con exito"
+      });
+      console.log(newrestaurant.body);
+    });
+  });
+
+//METODO PUT RESTAURANTE
 
 router.put("/restaurante",(req,res)=>{
     var params=req.query;
@@ -76,28 +76,21 @@ router.put("/restaurante",(req,res)=>{
         res.status(300),json({msn: "EL parametro ID es necesario"});
         return;
     }
-    var allowkeylist = ["name","propietario","nit", "direccion", "telefono"];
-    var keys = Object.keys(bodydata);
-    var updateobjectdata = {};
-    
-    for (var i = 0; i < keys.length; i++) {
-        if (allowkeylist.indexOf(keys[i]) > -1) {  
-            updateobjectdata[keys[i]] = bodydata[keys[i]];
+    REST.findByIdAndUpdate(params.id,bodydata,(err,docs)=>{
+        if(err){
+          res.json(500).json({
+            message:'error'
+          });
         }
-    }
-    
-   REST.update({_id: params.id},{$set: updateobjectdata}, (err, docs) => {
-        if (err) {
-            res.status(500).json({msn: "Existen problemas en la base de datos"});
-             return;
-         } 
-         res.status(200).json(docs);
-    });
+        res.status(200).json();
+      });
 });
 
-//METODO DELETE PARA RESTAURANTE
+//METODO DELETE RESTAURANTE
 
 router.delete("/restaurante",(req,res)=>{
+
+    console.log(req.query);
     var params = req.query;
     if (params.id == null) {
         res.status(300).json({msn: "El parámetro ID es necesario"});
@@ -108,28 +101,31 @@ router.delete("/restaurante",(req,res)=>{
             res.status(500).json({msn: "Existen problemas en la base de datos"});
              return;
          } 
-         res.status(200).json(docs);
+         res.status(200).json({
+             msm:"Eliminado",
+             docs
+         });
     });
 });
 
 //METODO PATCH RESTAURANTE
 
 router.patch("/restaurante", (req, res) => {
-    console.log(req.body);
-      if (req.query.id == null) {
-          res.status(300).json({
-          msn: "Error no existe restaurante"
-      });
-          return;
-      }
-      var id = req.query.id;
-      var params = req.body;
-      REST.findByIdAndUpdate(id, params, (err, docs) => {
-      res.status(200).json({
-          msn:"Actualizado",
-          docs
-      });
-      });
-  });
+  console.log(req.body);
+    if (req.query.id == null) {
+        res.status(300).json({
+        msn: "Error no existe restaurante"
+    });
+        return;
+    }
+    var id = req.query.id;
+    var params = req.body;
+    REST.findByIdAndUpdate(id, params, (err, docs) => {
+    res.status(200).json({
+        msn:"Actualizado",
+        docs
+    });
+    });
+});
 
 module.exports = router;
