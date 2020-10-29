@@ -5,9 +5,10 @@ var mongoose = require("./connect");
 var Schema = mongoose.Schema;
 var menusSchema = Schema({
 
-    restaurant: {
-        type: Schema.Types.ObjectId,
-        ref: "Restaurant"
+    restaurante: {
+        type: String,
+        //ref: "Restaurant"
+        default:"d4g4g4g"
     },
 
     nombre: String,

@@ -135,10 +135,11 @@ router.get(/menus\/[a-z0-9]{1,}$/, (req, res) => {
   }
 
   res.status(200).json({
-    "msn" : "No existe el pedido "
+    "msn" : "No existe el menu"
   });
   })
 });
+
 
 //METODOO DELETE MENUS
 
